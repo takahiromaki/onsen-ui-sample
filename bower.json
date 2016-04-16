@@ -1,0 +1,22 @@
+{
+  "name": "onsen",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Takahiro Maki <t-maki@glad-cube.com>"
+  ],
+  "license": "ISC",
+  "moduleType": [],
+  "homepage": "",
+  "directory": "public/bower_components",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "OnsenUI": "onsenui#~1.3.14"
+  }
+}
