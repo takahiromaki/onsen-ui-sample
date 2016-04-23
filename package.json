@@ -18,6 +18,9 @@
     "livescript": "^1.4.0"
   },
   "dependencies": {
-    "express": "^4.13.4"
+    "express": "^4.13.4",
+    "morgan": "^1.7.0",
+    "prelude-ls": "^1.1.2",
+    "twitter": "^1.2.5"
   }
 }

@@ -1,7 +1,45 @@
 <!DOCTYPE html>
-<html>
-  <head></head>
-  <body>
-    <h1>Hello world</h1>
+<html ng-app="myApp">
+  <head>
+    <link rel="stylesheet" href="/bower_components/OnsenUI/css/onsenui.css">
+    <link rel="stylesheet" href="/bower_components/OnsenUI/css/onsen-css-components-blue-basic-theme.css">
+    <link rel="stylesheet" href="/bower_components/OnsenUI/css/onsen-css-components.css">
+    <link rel="stylesheet" href="/css/app.css">
+    <script src="//code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
+    <script src="/bower_components/angular/angular.js"></script>
+    <script src="/bower_components/OnsenUI/js/onsenui.js"></script>
+    <script src="/js/app.js"></script>
+  </head>
+  <body ng-controller="AppController as app">
+    <ons-tabbar animation="fade">
+      <ons-tab page="home" active="true" ng-click="app.fetch_home_timeline()" icon="ion-home" label="Home"></ons-tab>
+      <ons-tab page="user" ng-click="app.fetch_user_timeline()" icon="ion-person" label="User"></ons-tab>
+    </ons-tabbar>
+    <ons-template id="home">
+      <ons-toolbar>
+        <div class="center">TwitterClient</div>
+        <div class="right">
+          <ons-toolbar-button ng-click="app.refresh('home')">
+            <ons-icon icon="ion-refresh"></ons-icon>
+          </ons-toolbar-button>
+        </div>
+      </ons-toolbar>
+      <ons-list>
+        <ons-list-item ng-repeat="tweet in app.home_timeline"><span class="user"><img ng-src="{{tweet.user.profile_image_url}}"><span class="name">@{{tweet.user.name}}</span></span><span ng-bind="tweet.text"></span></ons-list-item>
+      </ons-list>
+    </ons-template>
+    <ons-template id="user">
+      <ons-toolbar>
+        <div class="center">TwitterClient</div>
+        <div class="right">
+          <ons-toolbar-button ng-click="app.refresh('user')">
+            <ons-icon icon="ion-refresh"></ons-icon>
+          </ons-toolbar-button>
+        </div>
+      </ons-toolbar>
+      <ons-list>
+        <ons-list-item ng-repeat="tweet in app.user_timeline"><span class="user"><img ng-src="{{tweet.user.profile_image_url}}"><span class="name">@{{tweet.user.name}}</span></span><span ng-bind="tweet.text"></span></ons-list-item>
+      </ons-list>
+    </ons-template>
   </body>
 </html>
