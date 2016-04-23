@@ -1,3 +1,4 @@
+window <<< require \prelude-ls
 app = angular.module \myApp, <[onsen]>
 app.controller \AppController, <[$scope $http]> ++ ($scope, $http)->
   $scope
@@ -8,20 +9,21 @@ app.controller \AppController, <[$scope $http]> ++ ($scope, $http)->
       home_timeline:~
         -> @_home_timeline ?= void
         (@_home_timeline)->
+      frontkansai_timeline:~
+        -> @_frontkansai_timeline ?= void
+        (@_frontkansai_timeline)->
       initialize: ->
-        window.app = this
+        @create_fetch_methods!
         @fetch_home_timeline!
-        @listen!
-      fetch_home_timeline: ->
-        $http
-          .get \/twitter/home
-          .success (@home_timeline)~>
-      fetch_user_timeline: ->
-        $http
-          .get \/twitter/user
-          .success (@user_timeline)~>
-      refresh: (type)-> @.("fetch_#{type}_timeline")!
-      listen: ->
-        @$on \postchange, -> console.log it
+      create_fetch_methods: ->
+        <[home user frontkansai]> |> map (type)~>
+          @.("fetch_#{type}_timeline") = (refresh ?= no, $done)->
+            $http
+              .get "/twitter/#{type}#{if refresh then "?refresh=true" else ""}"
+              .success ~>
+                @.("#{type}_timeline") = it
+                $done?!
+      refresh: (type, $done)->
+        @.("fetch_#{type}_timeline") yes, $done
     ..initialize!
 

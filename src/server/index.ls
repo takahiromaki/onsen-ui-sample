@@ -9,21 +9,25 @@ client = new twitter do
 timeline =
   home: void
   user: void
+  frontkansai: void
 
 express!
   ..listen 3333
   ..use morgan format: \dev, immediate: yes
   ..use express.static \public
-  ..get \/twitter/user, (req, res)->
-    if timeline.home? then res.json that
-    else
-      err, tweets, response <~ client.get \statuses/user_timeline, \nodejs
-      res.json (timeline.home = tweets)
-  ..get \/twitter/home, (req, res)->
-    if timeline.user? then res.json that
-    else
-      err, tweets, response <~ client.get \statuses/home_timeline, \nodejs
-      res.json (timeline.user = tweets)
-
+  ..|> (app)->
+    <[user home]> |> map (type)->
+      app.route "/twitter/#type" .get (req, res)->
+        if req.query.refresh is \true then timeline.(type) = void
+        if timeline.(type)? then res.json that
+        else
+          err, tweets, response <~ client.get "statuses/#{type}_timeline", \nodejs
+          res.json (timeline.(type) = tweets)
+    app.route \/twitter/frontkansai .get (req, res)->
+      if req.query.refresh is \true then timeline.frontkansai = void
+      if timeline.frontkansai? then res.json that
+      else
+        err, tweets, response <~ client.get "search/tweets", q: \#frontkansai
+        res.json (timeline.frontkansai = tweets.statuses)
 
 console.log "GetReady!"

@@ -1,4 +1,5 @@
 var app;
+import$(window, require('prelude-ls'));
 app = angular.module('myApp', ['onsen']);
 app.controller('AppController', ['$scope', '$http'].concat(function($scope, $http){
   var x$;
@@ -29,31 +30,45 @@ app.controller('AppController', ['$scope', '$http'].concat(function($scope, $htt
     configurable: true,
     enumerable: true
   });
+  Object.defineProperty(x$, 'frontkansai_timeline', {
+    get: function(){
+      var ref$;
+      return (ref$ = this._frontkansai_timeline) != null
+        ? ref$
+        : this._frontkansai_timeline = void 8;
+    },
+    set: function(_frontkansai_timeline){
+      this._frontkansai_timeline = _frontkansai_timeline;
+    },
+    configurable: true,
+    enumerable: true
+  });
   x$.initialize = function(){
-    window.app = this;
-    this.fetch_home_timeline();
-    return this.listen();
+    this.create_fetch_methods();
+    return this.fetch_home_timeline();
   };
-  x$.fetch_home_timeline = function(){
+  x$.create_fetch_methods = function(){
     var this$ = this;
-    return $http.get('/twitter/home').success(function(home_timeline){
-      this$.home_timeline = home_timeline;
-    });
+    return map(function(type){
+      return this$["fetch_" + type + "_timeline"] = function(refresh, $done){
+        var this$ = this;
+        refresh == null && (refresh = false);
+        return $http.get("/twitter/" + type + (refresh ? "?refresh=true" : "")).success(function(it){
+          this$[type + "_timeline"] = it;
+          return typeof $done == 'function' ? $done() : void 8;
+        });
+      };
+    })(
+    ['home', 'user', 'frontkansai']);
   };
-  x$.fetch_user_timeline = function(){
-    var this$ = this;
-    return $http.get('/twitter/user').success(function(user_timeline){
-      this$.user_timeline = user_timeline;
-    });
-  };
-  x$.refresh = function(type){
-    return this["fetch_" + type + "_timeline"]();
-  };
-  x$.listen = function(){
-    return this.$on('postchange', function(it){
-      return console.log(it);
-    });
+  x$.refresh = function(type, $done){
+    return this["fetch_" + type + "_timeline"](true, $done);
   };
   x$.initialize();
   return x$;
 }));
+function import$(obj, src){
+  var own = {}.hasOwnProperty;
+  for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+  return obj;
+}
