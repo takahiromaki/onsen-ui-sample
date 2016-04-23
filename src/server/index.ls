@@ -12,7 +12,7 @@ timeline =
   frontkansai: void
 
 express!
-  ..listen 3333
+  ..listen 80
   ..use morgan format: \dev, immediate: yes
   ..use express.static \public
   ..|> (app)->
