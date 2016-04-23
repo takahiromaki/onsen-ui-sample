@@ -1,10 +1,10 @@
 require! <[express twitter morgan]>
 global <<< require \prelude-ls
 client = new twitter do
-  consumer_key: "FCvyFnCUqjyoWHzQqFUfg"
-  consumer_secret: "xTw3YrGHOpvhHWkR47RRtIjKF7j80EUVhZpUVWU3Q"
-  access_token_key: "576107610-pCJD832tpAjTddpGQ144uWri4oVzBDc0IAK1j6jz"
-  access_token_secret: "5KcTJJ5eC3bIVgz8FeBw0B1Uwfwz4Z0Pdp0y8ysyJA"
+  consumer_key: process.env.CMK
+  consumer_secret: process.env.CMS
+  access_token_key: process.env.ATK
+  access_token_secret: process.env.ATS
 
 timeline =
   home: void
